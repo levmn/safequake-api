@@ -1,12 +1,12 @@
-# SafeQuake API
+# 🌀 SafeQuake API 
 
 ## Sobre o Projeto
 Este é um projeto acadêmico desenvolvido para a FIAP com foco em eventos extremos. Nossa escolha foi desenvolver uma API para eventos sísmicos (terremotos) chamada SafeQuake.
 
-## Desenvolvedores - 2TDSPX
-- Allan Britto Moreira [RM558948]
-- Caio Liang [RM558868]
-- Levi Magni [RM98276]
+## 🧑‍💻 Desenvolvedores - 2TDSPX
+- [RM558948] [Allan Brito Moreira](https://github.com/Allanbm100)
+- [RM558868] [Caio Liang](https://github.com/caioliang)
+- [RM98276] [Levi Magni](https://github.com/levmn)
 
 ## Objetivo
 O SafeQuake é uma API desenvolvida para monitorar, registrar e gerenciar informações sobre eventos sísmicos. O sistema permite o acompanhamento de terremotos em tempo real, fornecendo dados cruciais para tomada de decisões e alertas de segurança.
@@ -18,8 +18,7 @@ O projeto segue uma arquitetura em camadas e está organizado da seguinte forma:
 safequake-api/
 ├── SafeQuake.API/
 │   ├── Controllers/
-│   ├── Properties/
-│   └── Tests/
+│   └── Properties/
 │
 ├── SafeQuake.Application/
 │   ├── Interfaces/
@@ -95,19 +94,3 @@ dotnet ef database update
 cd SafeQuake.MVC
 dotnet run
 ```
-
-## Testes dos Endpoints
-
-O projeto inclui uma pasta `Tests` com arquivos REST Client para testar os endpoints da API. Para utilizar:
-
-1. Instale a extensão "REST Client" no Visual Studio Code
-2. Navegue até a pasta `SafeQuake.API/Tests`
-3. Abra os arquivos `.http`
-4. Clique em "Send Request" acima de cada requisição para testá-la
-
-### Exemplos de Testes Disponíveis
-- GET /api/earthquakes
-- POST /api/earthquakes
-- GET /api/earthquakes/{id}
-- PUT /api/earthquakes/{id}
-- DELETE /api/earthquakes/{id}
