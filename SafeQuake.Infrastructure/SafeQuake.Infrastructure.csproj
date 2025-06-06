@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\SafeQuake.Domain\SafeQuake.Domain.csproj" />
     <ProjectReference Include="..\SafeQuake.Application\SafeQuake.Application.csproj" />
   </ItemGroup>
 

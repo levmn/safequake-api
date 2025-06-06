@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SafeQuake.Domain.Entities;
+using SafeQuake.Application.Interfaces.Data;
 
 namespace SafeQuake.Infrastructure.Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext : DbContext, IAppDbContext
 {
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
     public DbSet<UserEntity> Users { get; set; }
-    public DbSet<EarthquakeEntity> EarthquakeEvents { get; set; }
+    public DbSet<EarthquakeEntity> Earthquakes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
