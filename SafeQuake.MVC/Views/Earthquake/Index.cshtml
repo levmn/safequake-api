@@ -1,0 +1,52 @@
+@model IEnumerable<SafeQuake.MVC.Models.EarthquakeViewModel>
+
+@{
+    ViewData["Title"] = "Earthquakes";
+}
+
+<div class="container">
+    <h1>Recent Earthquakes</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Report New Earthquake</a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Magnitude)</th>
+                    <th>@Html.DisplayNameFor(model => model.Location)</th>
+                    <th>@Html.DisplayNameFor(model => model.OccurredAt)</th>
+                    <th>@Html.DisplayNameFor(model => model.Depth)</th>
+                    <th>@Html.DisplayNameFor(model => model.Latitude)</th>
+                    <th>@Html.DisplayNameFor(model => model.Longitude)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Magnitude)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                        <td>@Html.DisplayFor(modelItem => item.OccurredAt)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Depth)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Latitude)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Longitude)</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // You can add JavaScript for dynamic updates here
+        });
+    </script>
+} 
