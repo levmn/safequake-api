@@ -48,6 +48,82 @@ safequake-api/
     └── Services/
 ```
 
+## Fluxo do Projeto
+O diagrama abaixo ilustra o fluxo de dados e a interação entre as diferentes camadas do projeto:
+
+```mermaid
+graph TD
+    subgraph "Presentation Layer"
+        MVC["SafeQuake.MVC"]
+        API["SafeQuake.API"]
+        Swagger["Swagger/OpenAPI"]
+    end
+
+    subgraph "Application Layer"
+        UC["Use Cases"]
+        IRepo["Repository Interfaces"]
+        IServ["Service Interfaces"]
+    end
+
+    subgraph "Domain Layer"
+        E["Entities"]
+        Req["Requests"]
+        Res["Responses"]
+    end
+
+    subgraph "Infrastructure Layer"
+        DB["Database Context"]
+        Mig["Migrations"]
+    end
+
+    subgraph "Service Layer"
+        ExtServ["External Services"]
+        EQServ["Earthquake Service"]
+    end
+
+    MVC --> API
+    API --> Swagger
+    API --> UC
+    
+    UC --> IRepo
+    UC --> IServ
+    UC --> E
+    UC --> Req
+    UC --> Res
+    
+    IRepo --> DB
+    DB --> Mig
+    
+    IServ --> ExtServ
+    ExtServ --> EQServ
+```
+
+### Explicação do Fluxo
+1. **Camada de Apresentação**
+   - A interface MVC e a API servem como pontos de entrada da aplicação
+   - Swagger fornece documentação interativa e teste dos endpoints da API
+   - Os Controllers delegam as operações para os Use Cases apropriados
+
+2. **Camada de Aplicação**
+   - Use Cases implementam a lógica de negócio
+   - Define interfaces para repositórios (IRepo) e serviços externos (IServ)
+   - Utiliza entidades do domínio e objetos de Request/Response
+
+3. **Camada de Domínio**
+   - Contém as entidades centrais do negócio
+   - Define os objetos de Request e Response
+   - Representa o núcleo da aplicação, independente de infraestrutura
+
+4. **Camada de Infraestrutura**
+   - Implementa as interfaces de repositório definidas na camada de aplicação
+   - Gerencia o contexto do banco de dados Oracle
+   - Controla as migrações do banco de dados
+
+5. **Camada de Serviço**
+   - Fornece serviços externos, como o serviço de terremotos
+   - Implementa as interfaces de serviço definidas na camada de aplicação
+   - Gerencia a comunicação com APIs externas
+
 ## Configuração do Ambiente
 
 ### Requisitos

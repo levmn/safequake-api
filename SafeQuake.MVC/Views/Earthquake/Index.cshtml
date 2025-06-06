@@ -1,11 +1,11 @@
 @model IEnumerable<SafeQuake.MVC.Models.EarthquakeViewModel>
 
 @{
-    ViewData["Title"] = "Earthquakes";
+    ViewData["Title"] = "Histórico de Terremotos";
 }
 
 <div class="container">
-    <h1>Recent Earthquakes</h1>
+    <h1>Histórico de Terremotos</h1>
     <p>
         <a asp-action="Create" class="btn btn-primary">Report New Earthquake</a>
     </p>
@@ -18,23 +18,21 @@
                     <th>@Html.DisplayNameFor(model => model.Location)</th>
                     <th>@Html.DisplayNameFor(model => model.OccurredAt)</th>
                     <th>@Html.DisplayNameFor(model => model.Depth)</th>
-                    <th>@Html.DisplayNameFor(model => model.Latitude)</th>
-                    <th>@Html.DisplayNameFor(model => model.Longitude)</th>
-                    <th>Actions</th>
+                    <th>@Html.DisplayNameFor(model => model.AlertLevel)</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr class="@GetAlertClass(item.AlertLevel)">
                         <td>@Html.DisplayFor(modelItem => item.Magnitude)</td>
                         <td>@Html.DisplayFor(modelItem => item.Location)</td>
-                        <td>@Html.DisplayFor(modelItem => item.OccurredAt)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Depth)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Latitude)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Longitude)</td>
+                        <td>@item.OccurredAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@Html.DisplayFor(modelItem => item.Depth) km</td>
+                        <td>@Html.DisplayFor(modelItem => item.AlertLevel)</td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a>
                         </td>
                     </tr>
                 }
@@ -42,6 +40,19 @@
         </table>
     </div>
 </div>
+
+@functions {
+    private string GetAlertClass(string alertLevel)
+    {
+        return alertLevel?.ToLower() switch
+        {
+            "alto" => "table-danger",
+            "médio" => "table-warning",
+            "baixo" => "table-info",
+            _ => ""
+        };
+    }
+}
 
 @section Scripts {
     <script>

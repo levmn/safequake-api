@@ -1,0 +1,98 @@
+@model SafeQuake.MVC.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Bem-vindo, @Model.UserName!</h1>
+                <div class="btn-group">
+                    <a href="@Url.Action("Index", "Earthquake")" class="btn btn-outline-primary">
+                        Ver Todos os Eventos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-warning" role="alert">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Alertas de Terremotos Recentes</h5>
+                    <span class="badge bg-light text-danger">
+                        Últimos 7 dias
+                    </span>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentEarthquakes.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Magnitude</th>
+                                        <th>Local</th>
+                                        <th>Data</th>
+                                        <th>Profundidade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var earthquake in Model.RecentEarthquakes.OrderByDescending(e => e.Magnitude))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <span class="badge @(earthquake.Magnitude >= 6.0 ? "bg-danger" : "bg-warning")">
+                                                    @earthquake.Magnitude
+                                                </span>
+                                            </td>
+                                            <td>@earthquake.Location</td>
+                                            <td>@earthquake.OccurredAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@earthquake.Depth km</td>
+                                            <td>
+                                                <a href="@Url.Action("Details", "Earthquake", new { id = earthquake.Id })" 
+                                                   class="btn btn-sm btn-info">
+                                                    Detalhes
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                            <h5>Nenhum alerta de terremoto recente!</h5>
+                            <p class="text-muted">
+                                Não há registros de terremotos significativos nos últimos 7 dias.
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Refresh the dashboard every 5 minutes
+        setInterval(function() {
+            location.reload();
+        }, 300000);
+    </script>
+} 

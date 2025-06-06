@@ -1,0 +1,48 @@
+@model IEnumerable<SafeQuake.MVC.Models.UserViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="container">
+    <h1>Users</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Cadastrar Novo Usuário</a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>@Html.DisplayNameFor(model => model.Password)</th>
+                    <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Password)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // You can add JavaScript for dynamic updates here
+        });
+    </script>
+} 
