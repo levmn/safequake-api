@@ -162,11 +162,39 @@ dotnet restore
 
 3. Execute as migrações do banco de dados:
 ```bash
+cd SafeQuake.Infrastructure
 dotnet ef database update
 ```
 
-4. Execute o projeto MVC:
+4. Execute a API (em um terminal):
+```bash
+cd SafeQuake.API
+dotnet run
+```
+A API estará disponível em `http://localhost:5049`
+
+5. Execute o projeto MVC (em outro terminal):
 ```bash
 cd SafeQuake.MVC
 dotnet run
 ```
+O projeto MVC estará disponível em `http://localhost:5027`
+
+> ⚠️ **Importante**: É necessário manter tanto a API quanto o projeto MVC em execução simultaneamente para o funcionamento completo da aplicação.
+
+### Portas Padrão
+- API: http://localhost:5049
+- MVC: http://localhost:5027
+
+Se precisar alterar as portas, você pode fazer isso nos arquivos:
+- API: `SafeQuake.API/Properties/launchSettings.json`
+- MVC: `SafeQuake.MVC/Properties/launchSettings.json`
+
+### Testando a Aplicação
+1. Acesse o projeto MVC em `http://localhost:5027`
+2. Crie uma nova conta usando a opção "Cadastrar"
+3. Faça login com suas credenciais
+4. Explore as funcionalidades:
+   - Dashboard com alertas recentes
+   - Listagem de terremotos
+   - Registro de novos eventos sísmicos
