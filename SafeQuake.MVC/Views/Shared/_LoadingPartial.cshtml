@@ -1,0 +1,10 @@
+@{
+    var message = ViewData["LoadingMessage"] ?? "Carregando...";
+}
+
+<div class="text-center loading-spinner" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">@message</span>
+    </div>
+    <p class="mt-2">@message</p>
+</div> 

@@ -10,8 +10,11 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>Bem-vindo, @Model.UserName!</h1>
                 <div class="btn-group">
+                    <a href="@Url.Action("Create", "Earthquake")" class="btn btn-primary me-2">
+                        <i class="fas fa-plus"></i> Reportar Terremoto
+                    </a>
                     <a href="@Url.Action("Index", "Earthquake")" class="btn btn-outline-primary">
-                        Ver Todos os Eventos
+                        Ver Histórico
                     </a>
                 </div>
             </div>
@@ -20,69 +23,106 @@
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
             @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Alertas de Terremotos Recentes</h5>
-                    <span class="badge bg-light text-danger">
-                        Últimos 7 dias
-                    </span>
-                </div>
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
                 <div class="card-body">
-                    @if (Model.RecentEarthquakes.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Magnitude</th>
-                                        <th>Local</th>
-                                        <th>Data</th>
-                                        <th>Profundidade</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var earthquake in Model.RecentEarthquakes.OrderByDescending(e => e.Magnitude))
-                                    {
-                                        <tr>
-                                            <td>
-                                                <span class="badge @(earthquake.Magnitude >= 6.0 ? "bg-danger" : "bg-warning")">
-                                                    @earthquake.Magnitude
-                                                </span>
-                                            </td>
-                                            <td>@earthquake.Location</td>
-                                            <td>@earthquake.OccurredAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                                            <td>@earthquake.Depth km</td>
-                                            <td>
-                                                <a href="@Url.Action("Details", "Earthquake", new { id = earthquake.Id })" 
-                                                   class="btn btn-sm btn-info">
-                                                    Detalhes
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-4">
-                            <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
-                            <h5>Nenhum alerta de terremoto recente!</h5>
-                            <p class="text-muted">
-                                Não há registros de terremotos significativos nos últimos 7 dias.
-                            </p>
-                        </div>
-                    }
+                    <h5 class="card-title">Total de Alertas</h5>
+                    <h2 class="card-text">@Model.RecentEarthquakes.Count()</h2>
+                    <p class="card-text">Nos últimos 7 dias</p>
                 </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Magnitude Máxima</h5>
+                    <h2 class="card-text">@(Model.RecentEarthquakes.Any() ? Model.RecentEarthquakes.Max(e => e.Magnitude).ToString("F1") : "0.0")</h2>
+                    <p class="card-text">Maior magnitude registrada</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Profundidade Média</h5>
+                    <h2 class="card-text">@(Model.RecentEarthquakes.Any() ? Model.RecentEarthquakes.Average(e => e.Depth).ToString("F1") : "0.0")</h2>
+                    <p class="card-text">Profundidade média (km)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Alertas de Terremotos Recentes</h5>
+            <span class="badge bg-light text-danger">
+                Últimos 7 dias
+            </span>
+        </div>
+        <div class="card-body">
+            @await Html.PartialAsync("_LoadingPartial")
+            
+            <div class="earthquake-data">
+                @if (Model.RecentEarthquakes.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Magnitude</th>
+                                    <th>Local</th>
+                                    <th>Data</th>
+                                    <th>Profundidade</th>
+                                    <th>Nível de Alerta</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var earthquake in Model.RecentEarthquakes.OrderByDescending(e => e.OccurredAt))
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="badge rounded-pill @(earthquake.Magnitude >= 6.0 ? "bg-danger" : earthquake.Magnitude >= 4.0 ? "bg-warning" : "bg-info")">
+                                                @earthquake.Magnitude.ToString("F1")
+                                            </span>
+                                        </td>
+                                        <td>@earthquake.Location</td>
+                                        <td>@earthquake.OccurredAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@earthquake.Depth.ToString("F1") km</td>
+                                        <td>
+                                            <span class="badge @(earthquake.AlertLevel.ToLower() == "alto" ? "bg-danger" : earthquake.AlertLevel.ToLower() == "médio" ? "bg-warning" : "bg-info")">
+                                                @earthquake.AlertLevel
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Earthquake", new { id = earthquake.Id })" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-info-circle"></i> Detalhes
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+                        <h5>Nenhum alerta de terremoto recente!</h5>
+                        <p class="text-muted">
+                            Não há registros de terremotos significativos nos últimos 7 dias.
+                        </p>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -90,9 +130,28 @@
 
 @section Scripts {
     <script>
-        // Refresh the dashboard every 5 minutes
-        setInterval(function() {
-            location.reload();
-        }, 300000);
+        // Auto-refresh functionality
+        function refreshDashboard() {
+            $('.loading-spinner').show();
+            $('.earthquake-data').css('opacity', '0.5');
+            
+            $.get('@Url.Action("Index", "Dashboard")', function(data) {
+                $('.container').html($(data).find('.container').html());
+            }).always(function() {
+                $('.loading-spinner').hide();
+                $('.earthquake-data').css('opacity', '1');
+            });
+        }
+
+        // Refresh every 5 minutes
+        setInterval(refreshDashboard, 300000);
+
+        // Add Font Awesome
+        if (!document.querySelector('link[href*="font-awesome"]')) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+            document.head.appendChild(link);
+        }
     </script>
 } 
