@@ -49,53 +49,54 @@ safequake-api/
 ```
 
 ## Fluxo do Projeto
-O diagrama abaixo ilustra o fluxo de dados e a interação entre as diferentes camadas do projeto:
+Os diagramas abaixo ilustram o fluxo de dados e a interação entre as diferentes camadas do projeto:
 
 ```mermaid
 graph TD
-    subgraph "Presentation Layer"
-        MVC["SafeQuake.MVC"]
-        API["SafeQuake.API"]
-        Swagger["Swagger/OpenAPI"]
+    subgraph "Camada de Apresentação"
+        A1[SafeQuake.MVC - Interface Web]
+        A2[SafeQuake.API - REST Endpoints]
+        A3[Swagger/OpenAPI - Documentação]
     end
-
-    subgraph "Application Layer"
-        UC["Use Cases"]
-        IRepo["Repository Interfaces"]
-        IServ["Service Interfaces"]
-    end
-
-    subgraph "Domain Layer"
-        E["Entities"]
-        Req["Requests"]
-        Res["Responses"]
-    end
-
-    subgraph "Infrastructure Layer"
-        DB["Database Context"]
-        Mig["Migrations"]
-    end
-
-    subgraph "Service Layer"
-        ExtServ["External Services"]
-        EQServ["Earthquake Service"]
-    end
-
-    MVC --> API
-    API --> Swagger
-    API --> UC
     
-    UC --> IRepo
-    UC --> IServ
-    UC --> E
-    UC --> Req
-    UC --> Res
+    subgraph "Camada de Aplicação"
+        B1[Use Cases - Lógica de Negócio]
+        B2[Repository Interfaces]
+        B3[Service Interfaces]
+    end
     
-    IRepo --> DB
-    DB --> Mig
+    subgraph "Camada de Domínio"
+        C1[Entities - Entidades do Negócio]
+        C2[Requests - Objetos de Entrada]
+        C3[Responses - Objetos de Saída]
+    end
     
-    IServ --> ExtServ
-    ExtServ --> EQServ
+    subgraph "Camada de Infraestrutura"
+        D1[Database Context - Oracle]
+        D2[Migrations - Controle de Schema]
+    end
+    
+    subgraph "Camada de Serviços"
+        E1[External Services - APIs Externas]
+        E2[Earthquake Service - Serviço de Terremotos]
+    end
+    
+    %% Fluxo de dados
+    A1 --> A2
+    A2 --> A3
+    A2 --> B1
+    
+    B1 --> B2
+    B1 --> B3
+    B1 --> C1
+    B1 --> C2
+    B1 --> C3
+    
+    B2 --> D1
+    D1 --> D2
+    
+    B3 --> E1
+    E1 --> E2
 ```
 
 ### Explicação do Fluxo
@@ -123,6 +124,34 @@ graph TD
    - Fornece serviços externos, como o serviço de terremotos
    - Implementa as interfaces de serviço definidas na camada de aplicação
    - Gerencia a comunicação com APIs externas
+
+### Fluxo de execução
+
+```mermaid
+sequenceDiagram
+    participant User as Usuário
+    participant MVC as SafeQuake.MVC
+    participant API as SafeQuake.API
+    participant UC as Use Cases
+    participant DB as Oracle Database
+    participant ExtAPI as APIs Externas
+    
+    User->>MVC: Acessa interface web
+    MVC->>API: Requisição HTTP
+    API->>UC: Executa caso de uso
+    
+    par Acesso a dados
+        UC->>DB: Consulta/Persiste dados
+        DB-->>UC: Retorna dados
+    and Serviços externos
+        UC->>ExtAPI: Consulta dados sísmicos
+        ExtAPI-->>UC: Retorna eventos
+    end
+    
+    UC-->>API: Retorna resultado
+    API-->>MVC: Resposta HTTP
+    MVC-->>User: Exibe informações
+```
 
 ## Configuração do Ambiente
 
